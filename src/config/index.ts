@@ -10,8 +10,13 @@ const config = {
     email: process.env.SUPER_ADMIN_EMAIL as string,
     password: process.env.SUPER_ADMIN_PASSWORD as string,
   },
-  jwt_secret: process.env.JWT_SECRET as string,
-  refresh_secret: process.env.JWT_REFRESH_SECRET as string,
+  JWT: {
+    jwt_secret: process.env.JWT_SECRET as string,
+    refresh_secret: process.env.JWT_REFRESH_SECRET as string,
+  },
+  // PASSPORT_GOOGLE: {},
+  // REDIS:{}
+  // CLOUDINARY:{}
 };
 
 if (!config.connection_string) {
