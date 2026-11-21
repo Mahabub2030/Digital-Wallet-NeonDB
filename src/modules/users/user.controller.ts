@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { parseId } from "../../utils/validators";
 import * as userService from "./user.service";
+import sendResponse from "../../utils/sencResponse";
 
 // Controller = read the request, call the service, send the response.
 
@@ -19,6 +20,26 @@ export const getAllUsers = async (_req: Request, res: Response) => {
     message: "Users retrieved successfully!",
     data: users,
   });
+};
+export const getMe = async (req: Request, res: Response) => {
+  try {
+    // req.user is set by checkAuth
+    const result = await userService.getMeFromDB(req.user?.email);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "User retrieved successfully!",
+      data: result,
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: error?.statusCode || 500,
+      success: false,
+      message: error?.message,
+      error: error,
+    });
+  }
 };
 
 export const getUserById = async (req: Request, res: Response) => {
