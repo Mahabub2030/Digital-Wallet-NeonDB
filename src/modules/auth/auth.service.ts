@@ -42,11 +42,11 @@ const loginUserIntoDB = async (payload: {
     role: user.rows[0].role,
   };
 
-  const accessToken = jwt.sign(jwtPayload, config.jwt_secret, {
+  const accessToken = jwt.sign(jwtPayload, config.JWT.jwt_secret, {
     expiresIn: "1h",
   });
 
-  const refreshToken = jwt.sign(jwtPayload, config.refresh_secret, {
+  const refreshToken = jwt.sign(jwtPayload, config.JWT.refresh_secret, {
     expiresIn: "10d",
   });
 
@@ -59,7 +59,7 @@ const generateAccessToken = async (token: string) => {
   }
   const decode = jwt.verify(
     token as string,
-    config.refresh_secret,
+    config.JWT.refresh_secret,
   ) as JwtPayload;
   // console.log(decode);
 
@@ -84,7 +84,7 @@ const generateAccessToken = async (token: string) => {
     role: user.rows[0].role,
   };
 
-  const accessToken = jwt.sign(jwtPayload, config.jwt_secret, {
+  const accessToken = jwt.sign(jwtPayload, config.JWT.jwt_secret, {
     expiresIn: "1h",
   });
 

@@ -5,6 +5,7 @@ const router = Router();
 // /api/v1/auth/login
 
 router.post("/login", authController.loginUser);
+router.post("/logout", authController.logOutUser);
 
 router.post("/refresh-token", authController.generateToken);
 

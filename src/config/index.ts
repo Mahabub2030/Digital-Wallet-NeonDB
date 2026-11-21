@@ -11,7 +11,7 @@ const config = {
     password: process.env.SUPER_ADMIN_PASSWORD as string,
   },
   JWT: {
-    jwt_secret: process.env.JWT_SECRET as string,
+    jwt_secret: process.env.JWT_ACCESS_SECRET as string,
     refresh_secret: process.env.JWT_REFRESH_SECRET as string,
   },
   // PASSPORT_GOOGLE: {},

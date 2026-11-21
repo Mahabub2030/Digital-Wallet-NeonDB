@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
 import { authService } from "./auth.service";
 import sendResponse from "../../utils/sencResponse";
-
 const loginUser = async (req: Request, res: Response) => {
   try {
     const result = await authService.loginUserIntoDB(req.body);
@@ -32,7 +31,57 @@ const loginUser = async (req: Request, res: Response) => {
     });
   }
 };
+// const logOutUser = catchAsync(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     res.clearCookie("accessToken", {
+//       httpOnly: true,
+//       secure: true,
+//       sameSite: "none",
+//     });
+//     res.clearCookie("refreshToken", {
+//       httpOnly: true,
+//       secure: true,
+//       sameSite: "none",
+//     });
+//     sendResponse(res, {
+//       statusCode: httpStatus.OK,
+//       success: true,
+//       message: "User logged out successfully",
+//       data: null,
+//     });
+//   },
+// );
+const logOutUser = async (req: Request, res: Response) => {
+  try {
+    // Optional: invalidate the refresh token on the server too
+    // const { refreshToken } = req.cookies;
+    // if (refreshToken) {
+    //   await authService.logoutUserFromDB(refreshToken);
+    // }
 
+    res.clearCookie("refreshToken", {
+      secure: false, // must match login (true in production)
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+      domain: "localhost", // must match login
+    });
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "User logged out successfully!",
+      data: null,
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: error?.message,
+      error: error,
+    });
+  }
+};
 const generateToken = async (req: Request, res: Response) => {
   try {
     // console.log(req.cookies.refreshToken);
@@ -56,5 +105,6 @@ const generateToken = async (req: Request, res: Response) => {
 
 export const authController = {
   loginUser,
+  logOutUser,
   generateToken,
 };
