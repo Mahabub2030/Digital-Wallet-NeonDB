@@ -39,12 +39,10 @@ export const checkAuth =
       if (!token) {
         throw new AppError(401, "No token received!!");
       }
-
       const secret = config.JWT.jwt_secret;
       if (!secret) {
         throw new AppError(500, "JWT secret is not configured!!");
       }
-
       let verifiedToken: JwtPayload;
       try {
         const decoded = jwt.verify(token, secret);

@@ -6,6 +6,7 @@ const config = {
   port: Number(process.env.PORT) || 5000,
   connection_string: process.env.DATABASE_URL as string,
   FRONTEND_URL: process.env.FRONTEND_URL as string,
+  NODE_ENV: process.env.NODE_ENV as "development" | "production",
   super_admin: {
     name: process.env.SUPER_ADMIN_NAME || "Super Admin",
     email: process.env.SUPER_ADMIN_EMAIL as string,

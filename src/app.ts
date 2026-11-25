@@ -7,7 +7,7 @@ import cors from "cors";
 import routes from "./routes";
 import { authRoute } from "./modules/auth/auth.route";
 import config from "./config";
-
+import cookieParser from "cookie-parser";
 const app: Application = express();
 
 const allowedOrigins = [
@@ -27,6 +27,7 @@ app.use(
 );
 
 // 2. Body parsers
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

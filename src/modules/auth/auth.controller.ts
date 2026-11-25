@@ -1,34 +1,57 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { authService } from "./auth.service";
 import sendResponse from "../../utils/sencResponse";
-const loginUser = async (req: Request, res: Response) => {
+import { setAuthCookie } from "../../utils/setCookie";
+// const loginUser = async (req: Request, res: Response) => {
+//   try {
+//     const result = await authService.loginUserIntoDB(req.body);
+
+//     const { refreshToken } = result;
+
+//     res.cookie("refreshToken", refreshToken, {
+//       secure: true, // http -> false , https -> true / In Production -> true
+//       httpOnly: true, // Prevent XSS attack
+//       sameSite: "lax", // "none" , "strict", "lax" -> CSRF
+//       // maxAge
+//       path: "/",
+//       domain: "localhost", // .example.com
+//     });
+
+//     sendResponse(res, {
+//       statusCode: 200,
+//       success: true,
+//       message: "User login successfully!",
+//       data: result,
+//     });
+//   } catch (error: any) {
+//     sendResponse(res, {
+//       statusCode: 500,
+//       success: false,
+//       message: error?.message,
+//       error: error,
+//     });
+//   }
+// };
+const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await authService.loginUserIntoDB(req.body);
 
-    const { refreshToken } = result;
+    const { accessToken, refreshToken, ...rest } = result;
 
-    res.cookie("refreshToken", refreshToken, {
-      secure: true, // http -> false , https -> true / In Production -> true
-      httpOnly: true, // Prevent XSS attack
-      sameSite: "lax", // "none" , "strict", "lax" -> CSRF
-      // maxAge
-      path: "/",
-      domain: "localhost", // .example.com
-    });
+    // Sets BOTH accessToken and refreshToken cookies
+    setAuthCookie(res, { accessToken, refreshToken });
 
     sendResponse(res, {
       statusCode: 200,
       success: true,
       message: "User login successfully!",
-      data: result,
+      data: {
+        accessToken, // keep this if your frontend also sends it in the Authorization header
+        ...rest, // user info etc. (refreshToken stays only in the httpOnly cookie)
+      },
     });
-  } catch (error: any) {
-    sendResponse(res, {
-      statusCode: 500,
-      success: false,
-      message: error?.message,
-      error: error,
-    });
+  } catch (error) {
+    next(error); // let the global error handler send the correct status (401, 404, etc.)
   }
 };
 // const logOutUser = catchAsync(
